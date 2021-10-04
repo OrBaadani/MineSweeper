@@ -1,0 +1,26 @@
+body{
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+table{
+    margin:auto;
+}
+table td{
+    height: 25px;
+    width: 25px;
+    padding:2px;
+    background-color: lightgrey;
+}
+.clicked{
+    background-color: rgb(153, 153, 153);
+}
+#resetBtn{
+    height: 45px;
+    width: 45px;
+    font-size:30px;
+    padding:0;
+}
+.mine{
+    background-color: rgb(238, 49, 49);
+
+}
