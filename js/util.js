@@ -41,3 +41,36 @@ function resetTimer(){
     var elTimer = document.querySelector('.timer').innerText=gGame.secsPassed+'0';
 }
 
+function getEmptyCells(board) {
+	var emptyCells = [];
+	for (var i = 0; i < board.length; i++)
+		for (var j = 0; j < board[0].length; j++) {
+			if (!board[i][j].isMarked && !board[i][j].isMine&&!board[i][j].isShown) {
+				emptyCells.push({ i: i, j: j })
+			}
+		}
+	return emptyCells
+}
+
+
+//non recursive
+// function expandShown(board, cellI, cellJ) {
+
+//     for (var i = cellI - 1; i <= cellI + 1; i++) {
+//         if (i < 0 || i > board.length - 1) continue;
+//         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+//             if (j < 0 || j > board[0].length - 1) continue;
+
+//             if (board[i][j].isMarked) continue;
+//             if (!board[i][j].isMine) {
+//                 if (!board[i][j].isShown) {
+//                     board[i][j].isShown = true;
+//                     gGame.shownCount++;
+//                 }
+//                 var value = setMinesNegsCount(gBoard, i, j);
+//                 if (value === 0) value = ' ';
+//                 renderCell(i, j, value);
+//             }
+//         }
+//     }
+// }
