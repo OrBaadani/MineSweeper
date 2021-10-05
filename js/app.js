@@ -12,13 +12,10 @@ var gIsHint = false;
 var gGame;
 var gTimerInterval;
 
-
 //default
 var gLevel = { size: 8, mines: 12 };
 
-
 function initGame() {
-
 
     gLeftFirstClick = false;
     gFirstClick = false;
@@ -46,6 +43,7 @@ function createGame() {
         IsManuallyCreate: false
     };
 }
+
 function resetBtn() {
     var elBtn = document.querySelector('#resetBtn');
     elBtn.innerText = SMILE;
@@ -82,6 +80,7 @@ function buildBoard(size) {
     }
     return board;
 }
+//counts negs
 function setMinesNegsCount(board, cellI, cellJ) {
     var minesNegCount = 0;
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -94,6 +93,7 @@ function setMinesNegsCount(board, cellI, cellJ) {
     }
     return minesNegCount;
 }
+//render 3 lives
 function renderlives() {
     var elLives = document.querySelector('.lives');
     elLives.innerText = '';
@@ -101,6 +101,7 @@ function renderlives() {
         elLives.innerText += LIFE;
     }
 }
+//when cell is clicked
 function cellClicked(elCell, i, j) {
 
     if (gBoard[i][j].isShown) return;
@@ -109,12 +110,13 @@ function cellClicked(elCell, i, j) {
     if (gIsHint) {
         cellsHint(i, j); return;
     }
-    if (gGame.IsManuallyCreate){};
+    if (gGame.IsManuallyCreate){}
     if (!gFirstClick) { startTimer(); gFirstClick = true; }
     if (!gLeftFirstClick) {
         gLeftFirstClick = true;
         placeRndMines(i, j);
     }
+    
     if (gBoard[i][j].isMine) {
         elCell.classList.add('mine');
         renderCell(i, j, MINE)
@@ -128,16 +130,14 @@ function cellClicked(elCell, i, j) {
     else {
         var value = setMinesNegsCount(gBoard, i, j);
         if (value === 0) {
-            expandShownRec(gBoard, i, j);
+            expandShownRecursive(gBoard, i, j);
         }
         else {
             renderCell(i, j, value);
         }
     }
     checkGameOver();
-
 }
-
 
 function renderCell(i, j, value) {
     var elCell = document.querySelector(`.cell${i}-${j}`);
@@ -146,10 +146,9 @@ function renderCell(i, j, value) {
     if (!gBoard[i][j].isShown) {
         gBoard[i][j].isShown = true;
         gGame.shownCount++;
-        console.log('shown count', gGame.shownCount);
     }
 }
-
+//when mark with flag
 function cellMarked(elCell, i, j) {
     if (!gFirstClick) { startTimer(); gFirstClick = true; }
     if (!gGame.isOn) return;
@@ -170,7 +169,6 @@ function winGame() {
     elBtn.innerText = WIN;
     gGame.isOn = false;
     stopTimer();
-    console.log('win');
     bestScore(gLevel.size);
 }
 function checkGameOver() {
@@ -196,7 +194,7 @@ function LostGame() {
 }
 
 
-function expandShownRec(board, cellI, cellJ) {
+function expandShownRecursive(board, cellI, cellJ) {
     for (var i = cellI - 1; i <= cellI + 1; i++) {
         if (i < 0 || i > board.length - 1) continue;
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
@@ -210,7 +208,7 @@ function expandShownRec(board, cellI, cellJ) {
                     if (value === 0) {
                         value = ' ';
                         renderCell(i, j, value);
-                        expandShownRec(gBoard, i, j)
+                        expandShownRecursive(gBoard, i, j)
                     }
                     else renderCell(i, j, value);
                 }
@@ -218,21 +216,20 @@ function expandShownRec(board, cellI, cellJ) {
         }
     }
 }
+//on first click
 function placeRndMines(cellI, cellJ) {
     for (var i = 0; i < gLevel.mines; i++) {
 
         var rndI = getRandomInt(0, gBoard.length - 1);
         var rndJ = getRandomInt(0, gBoard[0].length - 1);
-        var elCell = document.querySelector(`.cell${rndI}-${rndJ}`);
         if (rndI !== cellI && rndJ !== cellJ && !gBoard[rndI][rndJ].isMine) {
             gBoard[rndI][rndJ].isMine = true;
-            // elCell.innerText += 'mine';
         }
         else i -= 1;
     }
 }
+
 function getHintBtn() {
-    console.log('hintscount', gGame.hints);
     if (gGame.hints === 0) {
         var elP = document.querySelector('.hintsContainer p').style.display = 'block';
         return;
@@ -242,8 +239,8 @@ function getHintBtn() {
     elHint.classList.add('hint');
     gGame.hints--;
     gIsHint = true;
-
 }
+
 function cellsHint(cellI, cellJ) {
     for (var i = cellI - 1; i <= cellI + 1; i++) {
         if (i < 0 || i >= gBoard.length) continue;
@@ -267,6 +264,7 @@ function cellsHint(cellI, cellJ) {
         } gIsHint = false;
     }, 1000)
 }
+
 function resetHints() {
     var elHints = document.querySelectorAll('.hints');
     var elP = document.querySelector('.hintsContainer p').style.display = 'none';
@@ -289,6 +287,7 @@ function updateScoreBoard() {
     elBestScore.innerText = localStorage.getItem(`BestScoreRecord${gLevel.size}`);
 }
 function safeClickbtn() {
+    if(!gLeftFirstClick) return;
     if (gGame.safeClick === 0) return;
     var emptyCells = getEmptyCells(gBoard);
     var rnd = getRandomInt(0, emptyCells.length - 1);
@@ -309,5 +308,4 @@ function resetSafeClick(){
 }
 function manuallyCreate(){
     gGame.IsManuallyCreate=true;
-
 }
