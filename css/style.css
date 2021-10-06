@@ -2,14 +2,14 @@
     box-sizing: border-box;
 }
 body{
-    background-color: #bc8ebe;
+    background-color: #92a8d1;
     
     text-align: center;
     /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
     font-family: 'Trebuchet MS', Helvetica, sans-serif;
 }
 .headContainer{
-    background-color: #bc8ebe;
+    background-color: #92a8d1;
 
 }
 h1{
@@ -20,20 +20,24 @@ table{
     margin:auto;
 }
 .mainContainer{
-    background-color: white;
+    background-color: #f4e1d2;
     margin:auto;
     display: block;
     position: absolute; 
     left: 0; 
     right: 0;
+    padding-bottom: 20px;
 }
 .divTable{
     display: inline-block;
     background-color: rgb(65, 65, 65);
     margin:auto;
     padding: 13px;
-    margin-top: 10px;
+    margin: 20px;
     border-radius: 10px;
+    vertical-align: top;
+
+
 }
 .levels button{
     font-size: 13px;
@@ -41,13 +45,15 @@ table{
     width: 80px;
     border-radius: 10px;
     border: 3px solid black;
-background-color: #995099;
+background-color: #4040a1;
 color: white;
+font-weight: bold;
+letter-spacing: 0.5px;
 padding: 5px;
 
 }
 .levels button:hover{
-    background-color:#8b478b ;
+    background-color:#364eb8 ;
 }
 table td{
     height: 25px;
@@ -104,6 +110,8 @@ img{
     /* display: flex;  */
     /* justify-content: space-between; */
     /* margin-right: 450px; */
+    vertical-align: top;
+    margin-top:20px;
 }
 .bar{
     margin:auto;
@@ -145,7 +153,8 @@ img{
 .hintsContainer button{
     display: block;
     background-color: rgb(252, 252, 184);
-    /* margin:auto; */
+    border-style:solid;
+    border-color: rgb(241, 175, 112);
 }
 .hintsContainer p{
     position: fixed;
@@ -155,26 +164,46 @@ img{
     margin-left: 55px;
 }
 .safeClicked{
-background-color: rgb(154, 121, 185);
-/* box-shadow: ; */
+    outline: 6px solid rgb(109, 240, 92);
+    
 }
 .hintsContainer button{
     border-radius: 5px;
     margin:auto;
 }
 
-.safeBtn,.manualBtn{
+.safeBtn,.manualBtn,.sevenBoomBtn{
 margin-top: 10px;
 font-size: 15px;
 border-radius: 5px;
 padding: 5px;
-background-color: rgb(170, 170, 170);
+/* background-color: #622569; */
+background-color:#c94c4c;
+color:white;
+border-style: solid;
+border-color: brown;
 }
-.safeBtn:hover{
-    background-color: rgb(204, 204, 204);
+.safeBtn:hover,.manualBtn:hover,.sevenBoomBtn:hover{
+    background-color: rgb(224, 101, 101);
+    color:black;
 
 }
 .safeClick{
 margin-top: 1px;
 font-size: 13px;
+}
+.divBtn{
+    display: inline-block;
+    vertical-align: top;
+    margin-top:20px;
+
+}
+.divBtn button{
+    display: block;
+    margin: auto;
+}
+.manualMode{
+    margin-top: 1px;
+ font-size: 13px;
+ visibility: hidden;
 }

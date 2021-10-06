@@ -29,24 +29,30 @@
 
 
     <div class="mainContainer">
-        
-        <div class="hintsContainer">
-            <img class="hints hint1" src="img/bolb.png" /> <img src="img/bolb.png" class="hints hint2" /> <img
-                class="hints hint3" src="img/bolb.png" />
-            <button onclick="getHintBtn()">Get Hint</button>
-            <p>no hints left</p>
+        <div class="divBtn">
+            <div class="hintsContainer">
+                <img class="hints hint1" src="img/bolb.png" /> 
+                <img src="img/bolb.png" class="hints hint2" /> 
+                <img class="hints hint3" src="img/bolb.png" />
+                <button onclick="getHintBtn()">Get Hint</button>
+                <p>no hints left</p>
+            </div><button class="safeBtn" onclick="safeClickbtn()">Safe Click</button>
+            <p class="safeClick"><span>3</span> Left</p>
+            <button class="manualBtn" onclick="manuallyBtn(this)">Manual Mode</button>
+            <p class="manualMode"><span></span> mines</p>
+            <button class="sevenBoomBtn" onclick="sevenBoomBtn(this)">7 Boom Mode</button>
         </div>
+
         <div class="divTable">
             <button id="resetBtn" onclick="resetBtn()">🙂</button>
 
             <table border="1">
                 <tbody class="board"></tbody>
             </table>
-        </div><div class="lives"></div>
-        <br>
-        <button class="safeBtn" onclick="safeClickbtn()">Safe Click</button>
-        <p class="safeClick"><span>3</span> Left</p>
-        <button hidden class="manualBtn" onclick="manuallyCreate()">mode</button>
+        </div>
+        <div class="lives"></div>
+
+
     </div>
 
 

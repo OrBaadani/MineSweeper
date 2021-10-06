@@ -11,6 +11,7 @@ const LIFE = '❤️';
 var gIsHint = false;
 var gGame;
 var gTimerInterval;
+var gTotalMines;
 
 //default
 var gLevel = { size: 8, mines: 12 };
@@ -28,7 +29,10 @@ function initGame() {
     resetHints();
     updateScoreBoard();
     resetSafeClick();
-    gHint = false;
+    resetManualBtn();
+    gIsHint = false;
+    gTotalMines = gLevel.mines;
+    resetBoomBtn();
 
 }
 function createGame() {
@@ -40,7 +44,8 @@ function createGame() {
         lives: 3,
         hints: 3,
         safeClick: 3,
-        IsManuallyCreate: false
+        manualMode: { isCreate: false, isPlay: false},
+        isSevenBoom: true
     };
 }
 
@@ -110,33 +115,38 @@ function cellClicked(elCell, i, j) {
     if (gIsHint) {
         cellsHint(i, j); return;
     }
-    if (gGame.IsManuallyCreate){}
-    if (!gFirstClick) { startTimer(); gFirstClick = true; }
-    if (!gLeftFirstClick) {
-        gLeftFirstClick = true;
-        placeRndMines(i, j);
-    }
-    
-    if (gBoard[i][j].isMine) {
-        elCell.classList.add('mine');
-        renderCell(i, j, MINE)
-        gGame.lives--;
-        renderlives();
-        if (gGame.lives === 0) {
-            LostGame();
-            return;
+
+    if (gGame.manualMode.isCreate) {
+        if(gGame.manualMode.isPlay)return
+        manualCreate(elCell, i, j)
+    } else {
+        
+        if (!gFirstClick) { startTimer(); gFirstClick = true; }
+        if (!gLeftFirstClick) {
+            gLeftFirstClick = true;
+            placeRndMines(i, j);
         }
-    }
-    else {
-        var value = setMinesNegsCount(gBoard, i, j);
-        if (value === 0) {
-            expandShownRecursive(gBoard, i, j);
+        if (gBoard[i][j].isMine) {
+            elCell.classList.add('mine');
+            renderCell(i, j, MINE)
+            gGame.lives--;
+            renderlives();
+            if (gGame.lives === 0) {
+                LostGame();
+                return;
+            }
         }
         else {
-            renderCell(i, j, value);
+            var value = setMinesNegsCount(gBoard, i, j);
+            if (value === 0) {
+                expandShownRecursive(gBoard, i, j);
+            }
+            else {
+                renderCell(i, j, value);
+            }
         }
+        checkGameOver();
     }
-    checkGameOver();
 }
 
 function renderCell(i, j, value) {
@@ -259,7 +269,7 @@ function cellsHint(cellI, cellJ) {
                 if (j < 0 || j >= gBoard[i].length) continue;
                 var elCell = document.querySelector(`.cell${i}-${j}`);
                 elCell.classList.remove('hinted');
-                if (gBoard[i][j].isMine) elCell.innerHTML = ' ';
+                if (gBoard[i][j].isMine && !gBoard[i][j].isShown) elCell.innerHTML = ' ';
             }
         } gIsHint = false;
     }, 1000)
@@ -287,7 +297,7 @@ function updateScoreBoard() {
     elBestScore.innerText = localStorage.getItem(`BestScoreRecord${gLevel.size}`);
 }
 function safeClickbtn() {
-    if(!gLeftFirstClick) return;
+    if (!gLeftFirstClick) return;
     if (gGame.safeClick === 0) return;
     var emptyCells = getEmptyCells(gBoard);
     var rnd = getRandomInt(0, emptyCells.length - 1);
@@ -295,17 +305,89 @@ function safeClickbtn() {
     var elCell = document.querySelector(`.cell${emptyCells[rnd].i}-${emptyCells[rnd].j}`);
     elCell.classList.add('safeClicked');
     gGame.safeClick--;
-    var elSpan=document.querySelector('.safeClick span');
+    var elSpan = document.querySelector('.safeClick span');
     elSpan.innerText = gGame.safeClick;
 
     setTimeout(function () {
         elCell.classList.remove('safeClicked');
     }, 1500);
 }
-function resetSafeClick(){
-    var elSpan=document.querySelector('.safeClick span');
+function resetSafeClick() {
+    var elSpan = document.querySelector('.safeClick span');
     elSpan.innerText = gGame.safeClick;
 }
-function manuallyCreate(){
-    gGame.IsManuallyCreate=true;
+function manuallyBtn(elBtn) {
+    if (gFirstClick) return;
+    var elP=document.querySelector('.manualMode');
+    elP.style.visibility='visible';
+    elBtn.style.borderWidth='5px';
+    elP.querySelector('span').innerText=gTotalMines;
+
+    if (elBtn.innerText === 'Hide') { hideManualMines(); 
+        gGame.manualMode.isCreate = false;
+    }
+    else {
+        gGame.manualMode.isCreate = true;
+        gLeftFirstClick = true;
+
+    }
+}
+function manualCreate(elCell, i, j) {
+    var elBtn = document.querySelector('.manualBtn');
+    var elSpan=document.querySelector('.manualMode span');
+
+    if (gTotalMines === 1) {
+        elBtn.innerText = 'Hide';
+        elCell.innerText = MINE;
+        gBoard[i][j].isMine=true;
+        gTotalMines--;
+        gGame.manualMode.isPlay = true;
+    }
+    else {
+        if (elCell.innerText !== MINE) {
+            elCell.innerText = MINE;
+            gTotalMines--;
+            gBoard[i][j].isMine=true;
+        }
+    }
+    elSpan.innerText=gTotalMines;
+}
+function hideManualMines() {
+
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var elCell = document.querySelector(`.cell${i}-${j}`);
+            if (elCell.innerText === MINE) elCell.innerText = ' ';
+        }
+    }
+}
+function resetManualBtn() {
+    var elP=document.querySelector('.manualMode');
+    elP.style.visibility='hidden';
+    var elBtn=document.querySelector('.manualBtn');
+    elBtn.innerText='Manual Mode';
+    elBtn.style.borderWidth='2px';
+}
+function sevenBoomBtn(elBtn) {
+    if (gFirstClick) return;
+    elBtn.style.borderWidth='5px';
+    gLeftFirstClick = true;
+    gGame.isSevenBoom = true;
+    var mineCount = 0;
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var boomIdx = (i * gLevel.size) + j;
+            if (boomIdx !== 0) {
+                if (boomIdx % 7 === 0 || Math.floor(boomIdx / 10) === 7 || boomIdx % 10 === 7) {
+                    mineCount++;
+                    gBoard[i][j].isMine = true;
+                }
+            }
+        }
+    }
+    gLevel.mines = mineCount;
+}
+function resetBoomBtn(){
+    var elBtn=document.querySelector('.sevenBoomBtn');
+    elBtn.style.borderWidth='2px';
 }
